@@ -1,9 +1,10 @@
+// types.ts
 export interface ModerationItem {
   label: string;
-  percentage: number;
-  severity: "high" | "medium" | "low" | "safe";
+  percentage: string; // e.g., "100.00"
+  severity: "high" | "medium" | "low" | "none";
   confidence: number;
-  status: "flagged" | "safe";
+  status: "detected" | "safe";
 }
 
 export interface ModerationCategory {
@@ -12,24 +13,45 @@ export interface ModerationCategory {
   items: ModerationItem[];
 }
 
+export interface ModerationConcern {
+  severity: "high" | "medium" | "low";
+  category: string;
+  type: string;
+  confidence: number;
+  percentage: string;
+  generator?: string; // Optional, used for AI-generated content
+}
+
+export interface AIGenerated {
+  detected: boolean;
+  confidence: number;
+  generator: string | null;
+}
+
 export interface ModerationSummary {
   overallAssessment: string;
   flagged: boolean;
-  concerns: Array<{
-    severity: "high" | "medium" | "low";
-    category: string;
-  }>;
+  concerns: ModerationConcern[];
+  safe: boolean;
+  categories: {
+    [key: string]: ModerationCategory;
+  };
+  aiGenerated: AIGenerated;
 }
 
 export interface ModerationData {
+  fileUrl: string;
+  fileName: string;
+  fileType: string;
+  status: string;
   flagged: boolean;
   summary: ModerationSummary;
   detailedResults: {
     [key: string]: ModerationCategory;
   };
-  fileName: string;
   processingType: string;
-  taskId?: string;
+  aiDetectionStatus: string;
+  moderationStatus: string;
 }
 
 export interface VideoUploadProps {
