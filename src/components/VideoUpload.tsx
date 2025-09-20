@@ -13,8 +13,8 @@ const VideoUpload: React.FC<VideoUploadProps> = ({
   const [dragActive, setDragActive] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const API_BASE_URL: string =
-    process.env.REACT_APP_API_URL || "http://localhost:3000";
+  const API_BASE_URL: string | undefined =
+    process.env.REACT_APP_API_URL;
 
   const handleFileSelect = (file: File): void => {
     if (file && file.type.startsWith("video/")) {
@@ -56,6 +56,12 @@ const VideoUpload: React.FC<VideoUploadProps> = ({
       return;
     }
 
+      if (!API_BASE_URL) {
+        onError(
+          "API URL not configured. Please check your environment variables."
+        );
+        return;
+      }
     onModerationStart();
 
     const formData = new FormData();
